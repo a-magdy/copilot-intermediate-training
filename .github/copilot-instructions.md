@@ -2,11 +2,18 @@
 
 Always-on guidance for contributions across this monorepo.
 
+## Instruction files
+
+Path-scoped rules live in `.github/instructions/`. **Before editing files in these areas, read the matching file first** — it contains conventions not repeated here:
+
+- `backend/**/*.ts` → [backend.instructions.md](instructions/backend.instructions.md)
+- `frontend/**/*.{ts,tsx}` → [frontend.instructions.md](instructions/frontend.instructions.md)
+
 ## Architecture
 
-- npm workspaces monorepo: `shared/`, `backend/`, `frontend/`, plus `e2e/` Playwright specs.
+- npm workspaces monorepo: `shared/`, `backend/`, `frontend/`, plus `e2e/` Playwright specs. See [README.md](../README.md) for setup, scripts, and the architecture diagram.
 - `@tsm/shared` is the single source of truth for domain types and enums. Add new shared types there before referencing them from `backend/` or `frontend/`.
-- Backend (Express + Lowdb) exposes `/api/*`. Frontend (Vite + React) consumes it via TanStack Query. Vite proxies `/api` in dev.
+- Backend (Express + Lowdb) exposes `/api/*` on `:47821`. Frontend (Vite + React) runs on `:51734`, consumes the API via TanStack Query, and proxies `/api` in dev.
 - Data is stored in JSON via Lowdb at `backend/data/db.json` (dev) and `backend/data/db.e2e.json` (Playwright). Treat both as ephemeral.
 
 ## Conventions
@@ -27,5 +34,5 @@ Always-on guidance for contributions across this monorepo.
 ## Workflow
 
 - Prefer editing existing files over creating new ones.
-- Run `npm run lint` and `npm test` before proposing a change is complete.
+- Run `npm run lint` and `npm test` before proposing a change is complete. After changing backend routes, analytics, or shared types, run the workspace-scoped suite (`npm run test -w backend`) and confirm it passes.
 - Don't commit generated files (`dist/`, `coverage/`, `test-results/`) or the local `db.json`.
